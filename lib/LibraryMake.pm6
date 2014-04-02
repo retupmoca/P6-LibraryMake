@@ -1,6 +1,6 @@
 module LibraryMake;
 
-our sub make($folder, $destfolder) is export {
+our sub get-vars($destfolder) is export {
     my %vars;
     %vars<DESTDIR> = $destfolder;
     if $*VM<name> eq 'parrot' {
@@ -18,6 +18,7 @@ our sub make($folder, $destfolder) is export {
         %vars<LDOUT> = $*VM<config><ld_out>;
 
         # this is copied from moar - probably wrong
+        die "Don't know how to get platform independent '-l' (LDUSR) on Parrot";
         my $ldusr = $*VM<config><ldusr>;
         $ldusr ~~ s/\%s//;
         %vars<LDUSR> = $ldusr;
@@ -56,6 +57,7 @@ our sub make($folder, $destfolder) is export {
         %vars<LDOUT> = $*VM<config><nativecall.ldout>;
 
         # this is copied from moar - probably wrong
+        die "Don't know how to get platform independent '-l' (LDUSR) on JVM";
         my $ldusr = $*VM<config><ldusr>;
         $ldusr ~~ s/\%s//;
         %vars<LDUSR> = $ldusr;
@@ -63,10 +65,20 @@ our sub make($folder, $destfolder) is export {
     else {
         die "Unknown VM; don't know how to build";
     }
+
+    return %vars;
+}
+
+our sub process-makefile($folder, %vars) is export {
     my $makefile = slurp($folder~'/Makefile.in');
     for %vars.kv -> $k, $v {
         $makefile ~~ s:g/\%$k\%/$v/;
     }
     spurt($folder~'/Makefile', $makefile);
+}
+
+our sub make($folder, $destfolder) is export {
+    my %vars = get-vars($destfolder);
+    process-makefile($folder, %vars);
     shell("make -C $folder");
 }

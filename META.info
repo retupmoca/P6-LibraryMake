@@ -1,0 +1,11 @@
+{
+    "name" : "LibraryMake",
+    "version" : "1.0.0",
+    "author" : "github:retupmoca",
+    "description" : "An attempt to simplify native compilation",
+    "depends" : [],
+    "provides" : {
+        "LibraryMake" : "lib/LibraryMake.pm6"
+    },
+    "source-url" : "git://github.com/retupmoca/P6-LibraryMake.git"
+}
