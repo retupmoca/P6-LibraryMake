@@ -17,6 +17,8 @@ our sub get-vars($destfolder) is export {
         %vars<LIBS> = $*VM<config><libs>;
         %vars<LDOUT> = $*VM<config><ld_out>;
 
+        %vars<MAKE> = $*VM<config><make>;
+
         # this is copied from moar - probably wrong
         die "Don't know how to get platform independent '-l' (LDUSR) on Parrot";
         my $ldusr = $*VM<config><ldusr>;
@@ -41,6 +43,8 @@ our sub get-vars($destfolder) is export {
         my $ldusr = $*VM<config><ldusr>;
         $ldusr ~~ s/\%s//;
         %vars<LDUSR> = $ldusr;
+
+        %vars<MAKE> = $*VM<config><make>;
     }
     elsif $*VM<name> eq 'jvm' {
         %vars<O> = $*VM<config><nativecall.o>;
@@ -55,6 +59,8 @@ our sub get-vars($destfolder) is export {
         %vars<LDFLAGS> = $*VM<config><nativecall.ldflags>;
         %vars<LIBS> = $*VM<config><nativecall.perllibs>;
         %vars<LDOUT> = $*VM<config><nativecall.ldout>;
+
+        %vars<MAKE> = $*VM<config><make>;
 
         # this is copied from moar - probably wrong
         die "Don't know how to get platform independent '-l' (LDUSR) on JVM";
@@ -80,5 +86,5 @@ our sub process-makefile($folder, %vars) is export {
 our sub make($folder, $destfolder) is export {
     my %vars = get-vars($destfolder);
     process-makefile($folder, %vars);
-    shell("make -C $folder");
+    shell(%vars<MAKE> ~ " -C $folder");
 }
