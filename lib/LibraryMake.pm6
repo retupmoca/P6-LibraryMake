@@ -19,11 +19,12 @@ our sub get-vars($destfolder) is export {
 
         %vars<MAKE> = $*VM<config><make>;
 
+        %vars<LDUSR> = '-l';
         # this is copied from moar - probably wrong
-        die "Don't know how to get platform independent '-l' (LDUSR) on Parrot";
-        my $ldusr = $*VM<config><ldusr>;
-        $ldusr ~~ s/\%s//;
-        %vars<LDUSR> = $ldusr;
+        #die "Don't know how to get platform independent '-l' (LDUSR) on Parrot";
+        #my $ldusr = $*VM<config><ldusr>;
+        #$ldusr ~~ s/\%s//;
+        #%vars<LDUSR> = $ldusr;
     }
     elsif $*VM<name> eq 'moar' {
         %vars<O> = $*VM<config><obj>;
@@ -62,11 +63,12 @@ our sub get-vars($destfolder) is export {
 
         %vars<MAKE> = $*VM<config><make>;
 
+        %vars<LDUSR> = '-l';
         # this is copied from moar - probably wrong
-        die "Don't know how to get platform independent '-l' (LDUSR) on JVM";
-        my $ldusr = $*VM<config><ldusr>;
-        $ldusr ~~ s/\%s//;
-        %vars<LDUSR> = $ldusr;
+        #die "Don't know how to get platform independent '-l' (LDUSR) on JVM";
+        #my $ldusr = $*VM<config><ldusr>;
+        #$ldusr ~~ s/\%s//;
+        #%vars<LDUSR> = $ldusr;
     }
     else {
         die "Unknown VM; don't know how to build";
