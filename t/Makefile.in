@@ -1,0 +1,7 @@
+all: %DESTDIR%/test
+
+%DESTDIR%/test: test%O%
+	%LD% %LDFLAGS% %LIBS% %LDOUT%%DESTDIR%/test test%O%
+
+test%O%: test.c
+	%CC% -c %CCFLAGS% %CCOUT%test%O% test.c
