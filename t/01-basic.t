@@ -1,6 +1,8 @@
 use v6;
 use Test;
 
+plan 7;
+
 use LibraryMake;
 
 ok True, "Can load module";
