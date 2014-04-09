@@ -8,9 +8,14 @@ use the same tools to build your native code that were used to build perl6 itsel
 
 Typically, this will be used in both Build.pm (to support panda installs), and in
 a standalone Configure.pl script in the src directory (to support standalone
-testing/building).
+testing/building). Note that if you need additional custom configure code, you
+will currently need to add it to both your Build.pm and to your Configure.pl6
 
 ## Example Usage ##
+
+The below files are examples of what you would write in your own project.
+The src directory is merely a convention, and the Makefile.in will likely be significantly
+different in your own project.
 
 /Build.pm
 
@@ -27,6 +32,8 @@ testing/building).
 
 /src/Configure.pl6
 
+    # Note that this is *not* run during panda install
+    # The example here is what the 'make' call in Build.pm does
     use LibraryMake;
     
     my $destdir = '../lib';
