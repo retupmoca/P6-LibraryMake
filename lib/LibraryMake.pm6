@@ -61,7 +61,7 @@ our sub get-vars($destfolder) is export {
         %vars<LIBS> = $*VM<config><nativecall.perllibs>;
         %vars<LDOUT> = $*VM<config><nativecall.ldout>;
 
-        %vars<MAKE> = $*VM<config><make>;
+        %vars<MAKE> = 'make';
 
         %vars<LDUSR> = '-l';
         # this is copied from moar - probably wrong
