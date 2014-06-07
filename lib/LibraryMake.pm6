@@ -49,7 +49,7 @@ our sub get-vars($destfolder) is export {
     }
     elsif $*VM.name eq 'jvm' {
         %vars<O> = $*VM.config<nativecall.o>;
-        %vars<SO> = $*VM.config<nativecall.so>;
+        %vars<SO> = '.' ~ $*VM.config<nativecall.so>;
         %vars<CC> = $*VM.config<nativecall.cc>;
         %vars<CCSHARED> = $*VM.config<nativecall.ccdlflags>;
         %vars<CCOUT> = "-o"; # this looks wrong?
