@@ -88,5 +88,9 @@ our sub process-makefile($folder, %vars) is export {
 our sub make($folder, $destfolder) is export {
     my %vars = get-vars($destfolder);
     process-makefile($folder, %vars);
-    shell(%vars<MAKE> ~ " -C $folder");
+
+    my $goback = $*CWD;
+    chdir($folder);
+    shell(%vars<MAKE>);
+    chdir($goback);
 }
