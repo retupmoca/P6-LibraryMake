@@ -1,5 +1,6 @@
 use v6;
 use Test;
+use Shell::Command;
 
 plan 7;
 
@@ -14,8 +15,9 @@ process-makefile('t', %vars);
 ok True, "Process makefile didn't die";
 ok ("t/Makefile".IO ~~ :f), "Makefile was created";
 
-shell(%vars<MAKE> ~ " -C t");
-ok (("t/test"~%vars<O>).IO ~~ :f), "Object file created";
-ok ("t/test".IO ~~ :f), "Binary was created";
+chdir("t");
+shell(%vars<MAKE>);
+ok (("test"~%vars<O>).IO ~~ :f), "Object file created";
+ok (("test"~%vars<EXE>).IO ~~ :f), "Binary was created";
 
-ok qx/t\/test/ eq "Hello world!\n", "Binary runs!";
+ok qqx/test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/, "Binary runs!";

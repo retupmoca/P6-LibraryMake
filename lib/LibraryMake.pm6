@@ -25,6 +25,8 @@ our sub get-vars($destfolder) is export {
         #my $ldusr = $*VM.config<ldusr>;
         #$ldusr ~~ s/\%s//;
         #%vars<LDUSR> = $ldusr;
+        
+        %vars<EXE> = $*VM.config<exe>;
     }
     elsif $*VM.name eq 'moar' {
         %vars<O> = $*VM.config<obj>;
@@ -46,6 +48,8 @@ our sub get-vars($destfolder) is export {
         %vars<LDUSR> = $ldusr;
 
         %vars<MAKE> = $*VM.config<make>;
+        
+        %vars<EXE> = $*VM.config<exe>;
     }
     elsif $*VM.name eq 'jvm' {
         %vars<O> = $*VM.config<nativecall.o>;
@@ -69,6 +73,8 @@ our sub get-vars($destfolder) is export {
         #my $ldusr = $*VM.config<ldusr>;
         #$ldusr ~~ s/\%s//;
         #%vars<LDUSR> = $ldusr;
+        
+        %vars<EXE> = $*VM.config<exe>;
     }
     else {
         die "Unknown VM; don't know how to build";
