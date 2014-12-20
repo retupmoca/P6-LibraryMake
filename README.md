@@ -22,10 +22,11 @@ different in your own project.
     use Panda::Common;
     use Panda::Builder;
     use LibraryMake;
+    use Shell::Command;
     
     class Build is Panda::Builder {
         method build($workdir) {
-            shell("mkdir -p $workdir/blib/lib");
+            mkpath "$workdir/blib/lib";
             make("$workdir/src", "$workdir/blib/lib");
         }
     }
