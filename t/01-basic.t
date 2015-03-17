@@ -20,4 +20,4 @@ shell(%vars<MAKE>);
 ok (("test"~%vars<O>).IO ~~ :f), "Object file created";
 ok (("test"~%vars<EXE>).IO ~~ :f), "Binary was created";
 
-ok qqx{./test%vars<EXE>} ~~ /^Hello ' ' world\!\n$/, "Binary runs!";
+ok qqx/.{$*SPEC.dir-sep}test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/, "Binary runs!";
