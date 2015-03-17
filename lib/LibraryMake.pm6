@@ -1,10 +1,7 @@
+#| An attempt to simplify building native code for a perl6 module.
 module LibraryMake;
 
-=head1 LibraryMake
-
 =begin pod
-An attempt to simplify building native code for a perl6 module.
-
 This is effectively a small configure script for a Makefile. It will allow you to
 use the same tools to build your native code that were used to build perl6 itself.
 
