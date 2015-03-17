@@ -1,6 +1,96 @@
 module LibraryMake;
 
-our sub get-vars($destfolder) is export {
+=head1 LibraryMake
+
+=begin pod
+An attempt to simplify building native code for a perl6 module.
+
+This is effectively a small configure script for a Makefile. It will allow you to
+use the same tools to build your native code that were used to build perl6 itself.
+
+Typically, this will be used in both Build.pm (to support panda installs), and in
+a standalone Configure.pl script in the src directory (to support standalone
+testing/building). Note that if you need additional custom configure code, you
+will currently need to add it to both your Build.pm and to your Configure.pl6
+
+=end pod
+
+=head2 Example Usage
+
+=begin pod
+The below files are examples of what you would write in your own project.
+The src directory is merely a convention, and the Makefile.in will likely be significantly
+different in your own project.
+
+/Build.pm
+
+    use Panda::Common;
+    use Panda::Builder;
+    use LibraryMake;
+    use Shell::Command;
+
+    class Build is Panda::Builder {
+        method build($workdir) {
+            mkpath "$workdir/blib/lib";
+            make("$workdir/src", "$workdir/blib/lib");
+        }
+    }
+
+/src/Configure.pl6
+
+    # Note that this is *not* run during panda install
+    # The example here is what the 'make' call in Build.pm does
+    use LibraryMake;
+
+    my $destdir = '../lib';
+    my %vars = get-vars($destdir);
+    process-makefile('.', %vars);
+
+/src/Makefile.in
+
+    all: %DESTDIR%/libfoo%SO%
+
+    %DESTDIR%/libfoo%SO%: libfoo%O%
+        %LD% %LDSHARED% %LDFLAGS% %LIBS% %LDUSR%pam %LDOUT%%DESTDIR%/libfoo%SO% libfoo%O%
+
+    libfoo%O%: libfoo.c
+        %CC% -c %CCSHARED% %CCFLAGS% %CCOUT%libfoo%O% libfoo.c
+
+/lib/Foo.pm6
+
+    # ...
+
+    use NativeCall;
+    use LibraryMake;
+
+    # Find our compiled library.
+    # It was installed along with this .pm6 file, so it should be somewhere in
+    # @*INC
+    sub library {
+        my $so = get-vars('')<SO>;
+        for @*INC {
+            if ($_~'/libfoo'~$so).IO ~~ :f {
+                return $_~'/libfoo'~$so;
+            }
+        }
+        die "Unable to find library";
+    }
+
+    # we do this instead of 'is native(...)' because 'is native' will resolve the
+    # library at compile time, while we need it to happen at runtime (because
+    # this library is installed *after* being compiled).
+    #
+    # This is a bit of a hack, will hopefully change soon with a NativeCall update.
+    sub foo() { * };
+    trait_mod:<is>(&foo, :native(library));
+
+=end pod
+
+=head2 Functions
+
+#| Returns configuration variables. Effectively just a wrapper around $*VM.config, as the VM config variables
+#| are different for each backend VM.
+our sub get-vars(Str $destfolder --> Hash) is export {
     my %vars;
     %vars<DESTDIR> = $destfolder;
     if $*VM.name eq 'parrot' {
@@ -25,7 +115,7 @@ our sub get-vars($destfolder) is export {
         #my $ldusr = $*VM.config<ldusr>;
         #$ldusr ~~ s/\%s//;
         #%vars<LDUSR> = $ldusr;
-        
+
         %vars<EXE> = $*VM.config<exe>;
     }
     elsif $*VM.name eq 'moar' {
@@ -48,7 +138,7 @@ our sub get-vars($destfolder) is export {
         %vars<LDUSR> = $ldusr;
 
         %vars<MAKE> = $*VM.config<make>;
-        
+
         %vars<EXE> = $*VM.config<exe>;
     }
     elsif $*VM.name eq 'jvm' {
@@ -73,7 +163,7 @@ our sub get-vars($destfolder) is export {
         #my $ldusr = $*VM.config<ldusr>;
         #$ldusr ~~ s/\%s//;
         #%vars<LDUSR> = $ldusr;
-        
+
         %vars<EXE> = $*VM.config<exe>;
     }
     else {
@@ -83,7 +173,8 @@ our sub get-vars($destfolder) is export {
     return %vars;
 }
 
-our sub process-makefile($folder, %vars) is export {
+#| Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should be the result of get-vars above.
+our sub process-makefile(Str $folder, %vars) is export {
     my $makefile = slurp($folder~'/Makefile.in');
     for %vars.kv -> $k, $v {
         $makefile ~~ s:g/\%$k\%/$v/;
@@ -91,7 +182,8 @@ our sub process-makefile($folder, %vars) is export {
     spurt($folder~'/Makefile', $makefile);
 }
 
-our sub make($folder, $destfolder) is export {
+#| Calls get-vars and process-makefile for you to generate '$folder/Makefile', then runs your system's 'make' to build it.
+our sub make(Str $folder, Str $destfolder) is export {
     my %vars = get-vars($destfolder);
     process-makefile($folder, %vars);
 
