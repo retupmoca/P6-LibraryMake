@@ -73,13 +73,10 @@ different in your own project.
         die "Unable to find library";
     }
 
-    # we do this instead of 'is native(...)' because 'is native' will resolve the
+    # we put 'is native(&library)' because it will call the function and resolve the
     # library at compile time, while we need it to happen at runtime (because
     # this library is installed *after* being compiled).
-    #
-    # This is a bit of a hack, will hopefully change soon with a NativeCall update.
-    sub foo() { * };
-    trait_mod:<is>(&foo, :native(library));
+    sub foo() is native(&library) { * };
 
 =end pod
 
