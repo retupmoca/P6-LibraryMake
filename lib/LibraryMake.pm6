@@ -65,9 +65,20 @@ different in your own project.
     # @*INC
     sub library {
         my $so = get-vars('')<SO>;
+        my $libname = "libfoo$so";
+        my $base = "lib/MyModule/$libname";
         for @*INC {
-            if ($_~'/libfoo'~$so).IO ~~ :f {
-                return $_~'/libfoo'~$so;
+            if my @files = ($_.files($base) || $_.files("blib/$base")) {
+                my $files = @files[0]<files>;
+                my $tmp = $files{$base} || $files{"blib/$base"};
+
+                # copy to a temp dir
+                #
+                # This is required because CompUnitRepo::Local::Installation stores the file
+                # with a different filename (a number with no extension) that NativeCall doesn't
+                # know how to load. We do this copy to fix the filename.
+                $tmp.IO.copy($*SPEC.tmpdir ~ '/' ~ $lib);
+                return $*SPEC.tmpdir ~ '/' ~ $lib;
             }
         }
         die "Unable to find library";
