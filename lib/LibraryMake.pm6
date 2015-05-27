@@ -1,5 +1,5 @@
 #| An attempt to simplify building native code for a perl6 module.
-module LibraryMake;
+unit module LibraryMake;
 
 =begin pod
 This is effectively a small configure script for a Makefile. It will allow you to
