@@ -194,6 +194,13 @@ our sub make(Str $folder, Str $destfolder) is export {
 
     my $goback = $*CWD;
     chdir($folder);
-    shell(%vars<MAKE>);
+    my $proc = shell(%vars<MAKE>);
+    while $proc.exitcode == -1 {
+        # busy wait
+        # (shell blocks, so this is in theory not needed)
+    }
+    if $proc.exitcode != 0 {
+        die "make exited with signal "~$proc.exitcode;
+    }
     chdir($goback);
 }
