@@ -61,27 +61,9 @@ different in your own project.
     use LibraryMake;
 
     # Find our compiled library.
-    # It was installed along with this .pm6 file, so it should be somewhere in
-    # @*INC
     sub library {
-        my $so = get-vars('')<SO>;
-        my $libname = "libfoo$so";
-        my $base = "lib/MyModule/$libname";
-        for @*INC {
-            if my @files = ($_.files($base) || $_.files("blib/$base")) {
-                my $files = @files[0]<files>;
-                my $tmp = $files{$base} || $files{"blib/$base"};
-
-                # copy to a temp dir
-                #
-                # This is required because CompUnitRepo::Local::Installation stores the file
-                # with a different filename (a number with no extension) that NativeCall doesn't
-                # know how to load. We do this copy to fix the filename.
-                $tmp.IO.copy($*SPEC.tmpdir ~ '/' ~ $lib);
-                return $*SPEC.tmpdir ~ '/' ~ $lib;
-            }
-        }
-        die "Unable to find library";
+        find-bundled($libname, 'Path/To/$libname/From/lib');
+        # find-bundled('zlib1.dll', 'Compress/Zlib'); #
     }
 
     # we put 'is native(&library)' because it will call the function and resolve the
@@ -203,4 +185,33 @@ our sub make(Str $folder, Str $destfolder) is export {
         die "make exited with signal "~$proc.exitcode;
     }
     chdir($goback);
+}
+
+#| Utility function - will find your bundled .dll file and return the path
+our sub find-bundled(Str $lib is copy, Str $base) is export {
+    # if we can't find one, assume there's a system install
+    my $b = $lib;
+    if $base {
+        $b = $base~"/$lib";
+    }
+    for @*INC -> $_ is copy {
+        $_ = CompUnitRepo.new($_);
+        my $base = $b;
+        if $_ ~~ CompUnitRepo::Local::File {
+            # CUR::Local::File has screwed up .files semantics
+            $base = $_.IO ~ '\\' ~ $base;
+        }
+        if my @files = ($_.files($base) || $_.files("lib/$base") || $_.files("blib/$base")) {
+            my $files = @files[0]<files>;
+            my $tmp = $files{$base} || $files{"blib/$base"};
+
+            # copy to a temp dir
+            $tmp.IO.copy($*SPEC.tmpdir ~ '\\' ~ $lib);
+            $lib = $*SPEC.tmpdir ~ '\\' ~ $lib;
+
+            last;
+        }
+    }
+
+    $lib;
 }
