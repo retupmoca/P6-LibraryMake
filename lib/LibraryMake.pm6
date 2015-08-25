@@ -199,7 +199,7 @@ our sub find-bundled(Str $lib is copy, Str $base) is export {
         my $base = $b;
         if $_ ~~ CompUnitRepo::Local::File {
             # CUR::Local::File has screwed up .files semantics
-            $base = $_.IO ~ '\\' ~ $base;
+            $base = $_.IO ~ '/' ~ $base;
         }
         if my @files = ($_.files($base)
                      || $_.files("lib/$base")
