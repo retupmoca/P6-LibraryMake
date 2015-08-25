@@ -201,7 +201,10 @@ our sub find-bundled(Str $lib is copy, Str $base) is export {
             # CUR::Local::File has screwed up .files semantics
             $base = $_.IO ~ '\\' ~ $base;
         }
-        if my @files = ($_.files($base) || $_.files("lib/$base") || $_.files("blib/$base")) {
+        if my @files = ($_.files($base)
+                     || $_.files("lib/$base")
+                     || $_.files("blib/$base")
+                     || $_.files("blib/lib/$base")) {
             my $files = @files[0]<files>;
             my $tmp = $files{$base} || $files{"blib/$base"};
 
