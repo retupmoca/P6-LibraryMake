@@ -188,7 +188,7 @@ our sub make(Str $folder, Str $destfolder) is export {
 }
 
 #| Utility function - will find your bundled .dll file and return the path
-our sub find-bundled(Str $lib is copy, Str $base) is export {
+our sub find-bundled(Str $lib is copy, Str $base) is export is DEPRECATED('Find::Bundled.find($lib, $base, :keep-filename, :return-original)') {
     # if we can't find one, assume there's a system install
     my $b = $lib;
     if $base {
