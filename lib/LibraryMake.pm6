@@ -16,8 +16,8 @@ will currently need to add it to both your Build.pm and to your Configure.pl6
 
 =begin pod
 The below files are examples of what you would write in your own project.
-The src directory is merely a convention, and the Makefile.in will likely be significantly
-different in your own project.
+The src directory is merely a convention, and the Makefile.in will likely be
+significantly different in your own project.
 
 /Build.pm
 
@@ -28,20 +28,26 @@ different in your own project.
 
     class Build is Panda::Builder {
         method build($workdir) {
-            mkpath "$workdir/blib/lib";
-            make("$workdir/src", "$workdir/blib/lib");
+            my $makefiledir = "$workdir/src";
+            my $destdir = "$workdir/blib/lib/My/Module";
+            mkpath $destdir;
+            make($makefiledir, $destdir);
         }
     }
 
 /src/Configure.pl6
 
-    # Note that this is *not* run during panda install
-    # The example here is what the 'make' call in Build.pm does
+    # Note that this is *not* run during panda install - it is intended to be
+    # run manually for testing / recompiling without needing to do a 'panda install'
+    #
+    # The example here is how the 'make' sub generates the makefile in the above Build.pm file
     use LibraryMake;
 
-    my $destdir = '../lib';
+    my $destdir = '../lib/My/Module';
     my %vars = get-vars($destdir);
     process-makefile('.', %vars);
+
+    say "Configure completed! You can now run '%vars<MAKE>' to build libfoo.";
 
 /src/Makefile.in
 
@@ -53,17 +59,18 @@ different in your own project.
     libfoo%O%: libfoo.c
         %CC% -c %CCSHARED% %CCFLAGS% %CCOUT%libfoo%O% libfoo.c
 
-/lib/Foo.pm6
+/lib/My/Module.pm6
 
     # ...
 
     use NativeCall;
     use LibraryMake;
+    use Find::Bundled;
 
     # Find our compiled library.
     sub library {
-        find-bundled($libname, 'Path/To/$libname/From/lib');
-        # find-bundled('zlib1.dll', 'Compress/Zlib'); #
+        my $so = get-vars('')<SO>;
+        return Find::Bundled.find("libfoo$so", "My/Module", :throw); # Not My::Module!
     }
 
     # we put 'is native(&library)' because it will call the function and resolve the
@@ -75,8 +82,8 @@ different in your own project.
 
 =head2 Functions
 
-#| Returns configuration variables. Effectively just a wrapper around $*VM.config, as the VM config variables
-#| are different for each backend VM.
+#| Returns configuration variables. Effectively just a wrapper around $*VM.config,
+#| as the VM config variables are different for each backend VM.
 our sub get-vars(Str $destfolder --> Hash) is export {
     my %vars;
     %vars<DESTDIR> = $destfolder;
@@ -160,7 +167,8 @@ our sub get-vars(Str $destfolder --> Hash) is export {
     return %vars;
 }
 
-#| Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should be the result of get-vars above.
+#| Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should
+#| be the result of get-vars above.
 our sub process-makefile(Str $folder, %vars) is export {
     my $makefile = slurp($folder~'/Makefile.in');
     for %vars.kv -> $k, $v {
@@ -169,7 +177,8 @@ our sub process-makefile(Str $folder, %vars) is export {
     spurt($folder~'/Makefile', $makefile);
 }
 
-#| Calls get-vars and process-makefile for you to generate '$folder/Makefile', then runs your system's 'make' to build it.
+#| Calls get-vars and process-makefile for you to generate '$folder/Makefile',
+#| then runs your system's 'make' to build it.
 our sub make(Str $folder, Str $destfolder) is export {
     my %vars = get-vars($destfolder);
     process-makefile($folder, %vars);
@@ -187,7 +196,8 @@ our sub make(Str $folder, Str $destfolder) is export {
     chdir($goback);
 }
 
-#| Utility function - will find your bundled .dll file and return the path
+#| Deprecated in favor of the Find::Bundled module.
+#| Utility function - will find your bundled .dll file and return the path.
 our sub find-bundled(Str $lib is copy, Str $base) is export is DEPRECATED('Find::Bundled.find($lib, $base, :keep-filename, :return-original)') {
     # if we can't find one, assume there's a system install
     my $b = $lib;
