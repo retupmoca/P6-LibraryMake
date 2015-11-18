@@ -1,5 +1,6 @@
 use v6;
 use Test;
+use lib 'lib';
 use Shell::Command;
 use Pod::Coverage;
 
@@ -23,6 +24,6 @@ ok (("test"~%vars<EXE>).IO ~~ :f), "Binary was created";
 
 ok qqx/.{$*SPEC.dir-sep}test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/, "Binary runs!";
 
-my $p = Pod::Coverage.new;
+my $p = Pod::Coverage::Full.new;
 $p.parse(LibraryMake);
 ok !$p.are-missing, 'Everything is documented';
