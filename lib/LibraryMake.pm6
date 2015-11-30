@@ -207,7 +207,7 @@ our sub find-bundled(Str $lib is copy, Str $base) is export is DEPRECATED('Find:
     for @*INC -> $_ is copy {
         $_ = CompUnitRepo.new($_);
         my $base = $b;
-        if $_ ~~ CompUnitRepo::Local::File {
+        if $_ ~~ CompUnit::Repository::FileSystem {
             # CUR::Local::File has screwed up .files semantics
             $base = $_.IO ~ '/' ~ $base;
         }
