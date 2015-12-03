@@ -3,7 +3,7 @@
     "version" : "1.0.0",
     "author" : "github:retupmoca",
     "description" : "An attempt to simplify native compilation",
-    "depends" : [ "Pod::Coverage" ],
+    "depends" : [ ],
     "test-depends" : [ "Shell::Command" ],
     "provides" : {
         "LibraryMake" : "lib/LibraryMake.pm6"
