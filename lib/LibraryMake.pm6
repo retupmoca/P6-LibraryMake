@@ -195,36 +195,3 @@ our sub make(Str $folder, Str $destfolder) is export {
     }
     chdir($goback);
 }
-
-#| Deprecated in favor of the Find::Bundled module.
-#| Utility function - will find your bundled .dll file and return the path.
-our sub find-bundled(Str $lib is copy, Str $base) is export is DEPRECATED('Find::Bundled.find($lib, $base, :keep-filename, :return-original)') {
-    # if we can't find one, assume there's a system install
-    my $b = $lib;
-    if $base {
-        $b = $base~"/$lib";
-    }
-    for @*INC -> $_ is copy {
-        $_ = CompUnitRepo.new($_);
-        my $base = $b;
-        if $_ ~~ CompUnit::Repository::FileSystem {
-            # CUR::Local::File has screwed up .files semantics
-            $base = $_.IO ~ '/' ~ $base;
-        }
-        if my @files = ($_.files($base)
-                     || $_.files("lib/$base")
-                     || $_.files("blib/$base")
-                     || $_.files("blib/lib/$base")) {
-            my $files = @files[0]<files>;
-            my $tmp = $files{$base} || $files{"blib/$base"};
-
-            # copy to a temp dir
-            $tmp.IO.copy($*SPEC.tmpdir ~ '\\' ~ $lib);
-            $lib = $*SPEC.tmpdir ~ '\\' ~ $lib;
-
-            last;
-        }
-    }
-
-    $lib;
-}
