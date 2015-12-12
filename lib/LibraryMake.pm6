@@ -29,7 +29,7 @@ significantly different in your own project.
     class Build is Panda::Builder {
         method build($workdir) {
             my $makefiledir = "$workdir/src";
-            my $destdir = "$workdir/blib/lib/My/Module";
+            my $destdir = "$workdir/resources";
             mkpath $destdir;
             make($makefiledir, $destdir);
         }
@@ -43,7 +43,7 @@ significantly different in your own project.
     # The example here is how the 'make' sub generates the makefile in the above Build.pm file
     use LibraryMake;
 
-    my $destdir = '../lib/My/Module';
+    my $destdir = '../resources';
     my %vars = get-vars($destdir);
     process-makefile('.', %vars);
 
@@ -65,18 +65,24 @@ significantly different in your own project.
 
     use NativeCall;
     use LibraryMake;
-    use Find::Bundled;
 
     # Find our compiled library.
     sub library {
         my $so = get-vars('')<SO>;
-        return Find::Bundled.find("libfoo$so", "My/Module", :throw); # Not My::Module!
+        return ~(%?RESOURCES{"libfoo$so"});
     }
 
     # we put 'is native(&library)' because it will call the function and resolve the
     # library at compile time, while we need it to happen at runtime (because
     # this library is installed *after* being compiled).
     sub foo() is native(&library) { * };
+
+/META.info
+
+    # include the following section in your META.info:
+    "resources" : [
+        "libfoo.so"
+    ]
 
 =end pod
 

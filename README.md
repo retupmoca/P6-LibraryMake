@@ -22,7 +22,7 @@ The below files are examples of what you would write in your own project. The sr
     class Build is Panda::Builder {
         method build($workdir) {
             my $makefiledir = "$workdir/src";
-            my $destdir = "$workdir/blib/lib/My/Module";
+            my $destdir = "$workdir/resources";
             mkpath $destdir;
             make($makefiledir, $destdir);
         }
@@ -36,7 +36,7 @@ The below files are examples of what you would write in your own project. The sr
     # The example here is how the 'make' sub generates the makefile in the above Build.pm file
     use LibraryMake;
 
-    my $destdir = '../lib/My/Module';
+    my $destdir = '../resources';
     my %vars = get-vars($destdir);
     process-makefile('.', %vars);
 
@@ -58,18 +58,24 @@ The below files are examples of what you would write in your own project. The sr
 
     use NativeCall;
     use LibraryMake;
-    use Find::Bundled;
 
     # Find our compiled library.
     sub library {
         my $so = get-vars('')<SO>;
-        return Find::Bundled.find("libfoo$so", "My/Module", :throw); # Not My::Module!
+        return ~(%?RESOURCES{"libfoo$so"});
     }
 
     # we put 'is native(&library)' because it will call the function and resolve the
     # library at compile time, while we need it to happen at runtime (because
     # this library is installed *after* being compiled).
     sub foo() is native(&library) { * };
+
+/META.info
+
+    # include the following section in your META.info:
+    "resources" : [
+        "libfoo.so"
+    ]
 
 Functions
 ---------
@@ -88,7 +94,7 @@ Returns configuration variables. Effectively just a wrapper around $*VM.config, 
 
 ```
 sub process-makefile(
-    Str $folder, 
+    Str $folder,
     %vars
 ) returns Mu
 ```
@@ -99,20 +105,9 @@ Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should be t
 
 ```
 sub make(
-    Str $folder, 
+    Str $folder,
     Str $destfolder
 ) returns Mu
 ```
 
 Calls get-vars and process-makefile for you to generate '$folder/Makefile', then runs your system's 'make' to build it.
-
-### sub find-bundled
-
-```
-sub find-bundled(
-    Str $lib is copy, 
-    Str $base
-) returns Mu
-```
-
-Deprecated in favor of the Find::Bundled module. Utility function - will find your bundled .dll file and return the path.
