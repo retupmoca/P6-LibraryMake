@@ -170,6 +170,10 @@ our sub get-vars(Str $destfolder --> Hash) is export {
         die "Unknown VM; don't know how to build";
     }
 
+    for %vars.kv -> $k, $v {
+      %vars{$k} [R//]= %*ENV{$k};
+    }
+
     return %vars;
 }
 

@@ -3,14 +3,15 @@ use Test;
 use lib 'lib';
 use Shell::Command;
 
-plan 7;
+plan 8;
 
 use LibraryMake;
 
 ok True, "Can load module";
-
+%*ENV<LDFLAGS> = "-fPIC";
 my %vars = get-vars('.');
 ok %vars<CC>:exists, "Can get vars";
+ok (%vars<LDFLAGS> eq "-fPIC"), "ENV overrides VM defaults";
 
 process-makefile('t', %vars);
 ok True, "Process makefile didn't die";
