@@ -5,7 +5,7 @@ An attempt to simplify building native code for a perl6 module.
 
 This is effectively a small configure script for a Makefile. It will allow you to use the same tools to build your native code that were used to build perl6 itself.
 
-Typically, this will be used in both Build.pm (to support panda installs), and in a standalone Configure.pl script in the src directory (to support standalone testing/building). Note that if you need additional custom configure code, you will currently need to add it to both your Build.pm and to your Configure.pl6
+Typically, this will be used in both Build.pm (to support installation using a module manager), and in a standalone Configure.pl script in the src directory (to support standalone testing/building). Note that if you need additional custom configure code, you will currently need to add it to both your Build.pm and to your Configure.pl6
 
 Example Usage
 -------------
@@ -14,43 +14,59 @@ The below files are examples of what you would write in your own project. The sr
 
 /Build.pm
 
-    use Panda::Common;
-    use Panda::Builder;
+    use v6;
     use LibraryMake;
     use Shell::Command;
 
-    class Build is Panda::Builder {
-        method build($workdir) {
-            my $makefiledir = "$workdir/src";
-            my $destdir = "$workdir/resources";
-            mkpath $destdir;
-            make($makefiledir, $destdir);
+    my $libname = 'chelper';
+
+    class Build {
+        method build($dir) {
+            my %vars = get-vars($dir);
+            %vars{$libname} = $*VM.platform-library-name($libname.IO);
+            mkdir "$dir/resources" unless "$dir/resources".IO.e;
+            mkdir "$dir/resources/libraries" unless "$dir/resources/libraries".IO.e;
+            process-makefile($dir, %vars);
+            my $goback = $*CWD;
+            chdir($dir);
+            shell(%vars<MAKE>);
+            chdir($goback);
         }
     }
 
 /src/Configure.pl6
 
-    # Note that this is *not* run during panda install - it is intended to be
-    # run manually for testing / recompiling without needing to do a 'panda install'
-    #
-    # The example here is how the 'make' sub generates the makefile in the above Build.pm file
+    #!/usr/bin/env perl6
+    use v6;
     use LibraryMake;
 
-    my $destdir = '../resources';
-    my %vars = get-vars($destdir);
+    my $libname = 'chelper';
+    my %vars = get-vars('.');
+    %vars{$libname} = $*VM.platform-library-name($libname.IO);
+    mkdir "resources" unless "resources".IO.e;
+    mkdir "resources/libraries" unless "resources/libraries".IO.e;
     process-makefile('.', %vars);
+    shell(%vars<MAKE>);
 
-    say "Configure completed! You can now run '%vars<MAKE>' to build libfoo.";
+    say "Configure completed! You can now run '%vars<MAKE>' to build lib$libname.";
 
-/src/Makefile.in
+/src/Makefile.in (Make sure you use TABs and not spaces!)
 
-    all: %DESTDIR%/libfoo%SO%
+    .PHONY: clean test
 
-    %DESTDIR%/libfoo%SO%: libfoo%O%
-        %LD% %LDSHARED% %LDFLAGS% %LIBS% %LDUSR%pam %LDOUT%%DESTDIR%/libfoo%SO% libfoo%O%
+    all: %DESTDIR%/resources/libraries/%chelper%
 
-    libfoo%O%: libfoo.c
-        %CC% -c %CCSHARED% %CCFLAGS% %CCOUT%libfoo%O% libfoo.c
+    clean:
+        -rm %DESTDIR%/resources/libraries/%chelper% %DESTDIR%/*.o
+
+    %DESTDIR%/resources/libraries/%chelper%: chelper%O%
+        %LD% %LDSHARED% %LDFLAGS% %LIBS% %LDOUT%%DESTDIR%/resources/libraries/%chelper% chelper%O%
+
+    chelper%O%: src/chelper.c
+        %CC% -c %CCSHARED% %CCFLAGS% %CCOUT% chelper%O% src/chelper.c
+
+    test: all
+    prove -e "perl6 -Ilib" t
 
 /lib/My/Module.pm6
 
@@ -59,22 +75,18 @@ The below files are examples of what you would write in your own project. The sr
     use NativeCall;
     use LibraryMake;
 
-    # Find our compiled library.
-    sub library {
-        my $so = get-vars('')<SO>;
-        return ~(%?RESOURCES{"libfoo$so"});
-    }
+    constant CHELPER = %?RESOURCES<libraries/chelper>.absolute;
 
-    # we put 'is native(&library)' because it will call the function and resolve the
-    # library at compile time, while we need it to happen at runtime (because
-    # this library is installed *after* being compiled).
-    sub foo() is native(&library) { * };
+    sub foo() is native( CHELPER ) { * };
 
-/META.info
+/META6.json
 
-    # include the following section in your META.info:
+    # include the following section in your META6.json:
     "resources" : [
-        "libfoo.so"
+        "library/chelper"
+    ],
+    "depends" : [
+        "LibraryMake"
     ]
 
 Functions
@@ -94,7 +106,7 @@ Returns configuration variables. Effectively just a wrapper around $*VM.config, 
 
 ```
 sub process-makefile(
-    Str $folder,
+    Str $folder, 
     %vars
 ) returns Mu
 ```
@@ -105,7 +117,7 @@ Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should be t
 
 ```
 sub make(
-    Str $folder,
+    Str $folder, 
     Str $destfolder
 ) returns Mu
 ```
