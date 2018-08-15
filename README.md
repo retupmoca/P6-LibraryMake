@@ -66,7 +66,7 @@ The below files are examples of what you would write in your own project. The sr
         %CC% -c %CCSHARED% %CCFLAGS% %CCOUT% chelper%O% src/chelper.c
 
     test: all
-    prove -e "perl6 -Ilib" t
+        prove -e "perl6 -Ilib" t
 
 /lib/My/Module.pm6
 
