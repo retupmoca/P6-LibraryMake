@@ -3,3 +3,4 @@ test.exe
 test.obj
 test.o
 test
+.precomp/
