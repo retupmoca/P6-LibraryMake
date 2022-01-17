@@ -26,5 +26,5 @@ if build-tools-installed() {
     ok qqx/.{$*SPEC.dir-sep}test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/, "Binary runs!";
 }
 else {
-    skip "Build tools are not been installed (CC:%vars<CC>, LD:%vars<LD>, MAKE:%vars<MAKE>)", 5;
+    skip "Build tools are not installed (CC:%vars<CC>, LD:%vars<LD>, MAKE:%vars<MAKE>)", 5;
 }
