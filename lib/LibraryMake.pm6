@@ -1,6 +1,8 @@
 #| An attempt to simplify building native code for a perl6 module.
 unit module LibraryMake;
 
+use File::Which;
+
 =begin pod
 This is effectively a small configure script for a Makefile. It will allow you to
 use the same tools to build your native code that were used to build perl6 itself.
@@ -217,4 +219,18 @@ our sub make(Str $folder, Str $destfolder) is export {
         die "make exited with signal "~$proc.exitcode;
     }
     chdir($goback);
+}
+
+sub can-compile(%vars) {
+    so %vars<CC> && which(%vars<CC>);
+}
+sub can-link(%vars) {
+    so %vars<LD> && which(%vars<LD>);
+}
+sub can-make(%vars = get-vars('.')) {
+    so %vars<MAKE> && which(%vars<MAKE>);
+}
+our sub build-tools-installed() is export {
+    my %vars = get-vars('.');
+    can-compile(%vars) && can-link(%vars) && can-make(%vars)
 }

@@ -13,13 +13,18 @@ my %vars = get-vars('.');
 ok %vars<CC>:exists, "Can get vars";
 ok (%vars<LDFLAGS> eq "-fPIC"), "ENV overrides VM defaults";
 
-process-makefile('t', %vars);
-ok True, "Process makefile didn't die";
-ok ("t/Makefile".IO ~~ :f), "Makefile was created";
+if build-tools-installed() {
+    process-makefile('t', %vars);
+    ok True, "Process makefile didn't die";
+    ok ("t/Makefile".IO ~~ :f), "Makefile was created";
 
-chdir("t");
-shell(%vars<MAKE>);
-ok (("test"~%vars<O>).IO ~~ :f), "Object file created";
-ok (("test"~%vars<EXE>).IO ~~ :f), "Binary was created";
+    chdir("t");
+    shell(%vars<MAKE>);
+    ok (("test"~%vars<O>).IO ~~ :f), "Object file created";
+    ok (("test"~%vars<EXE>).IO ~~ :f), "Binary was created";
 
-ok qqx/.{$*SPEC.dir-sep}test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/, "Binary runs!";
+    ok qqx/.{$*SPEC.dir-sep}test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/, "Binary runs!";
+}
+else {
+    skip "Build tools are not been installed (CC:%vars<CC>, LD:%vars<LD>, MAKE:%vars<MAKE>)", 5;
+}
