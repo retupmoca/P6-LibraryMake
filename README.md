@@ -1,7 +1,7 @@
 LibraryMake
 ------------------
 
-An attempt to simplify building native code for a perl6 module.
+An attempt to simplify building native code for a Raku module.
 
 This is effectively a small configure script for a Makefile. It will allow you to
 use the same tools to build your native code that were used to build Raku itself.
