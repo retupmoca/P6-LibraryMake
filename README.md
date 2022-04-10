@@ -1,6 +1,8 @@
 LibraryMake
 ------------------
 
+[![test](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml/badge.svg)](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml)
+
 An attempt to simplify building native code for a Raku module.
 
 This is effectively a small configure script for a Makefile. It will allow you to
