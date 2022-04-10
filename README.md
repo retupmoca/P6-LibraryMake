@@ -6,18 +6,18 @@ An attempt to simplify building native code for a Raku module.
 This is effectively a small configure script for a Makefile. It will allow you to
 use the same tools to build your native code that were used to build Raku itself.
 
-Typically, this will be used in both Build.rakumod (to support installation using a
-module manager), and in a standalone Configure.raku script in the src directory
+Typically, this will be used in both `Build.rakumod` (to support installation using a
+module manager), and in a standalone `Configure.raku` script in the `src` directory
 (to support standalone testing/building). Note that if you need additional
-custom configure code, you will currently need to add it to both your Build.rakumod
-and to your Configure.raku.
+custom configure code, you will currently need to add it to both your `Build.rakumod`
+and to your `Configure.raku`.
 
 Example Usage
 -------------
 
 
 The below files are examples of what you would write in your own project.
-The src directory is merely a convention, and the Makefile.in will likely be
+The `src` directory is merely a convention, and the `Makefile.in` will likely be
 significantly different in your own project.
 
 /Build.rakumod
