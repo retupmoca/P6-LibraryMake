@@ -121,7 +121,7 @@ sub process-makefile(
 ) returns Mu
 ```
 
-Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should be the result of get-vars above.
+Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should be the result of `get-vars` above.
 
 ### sub make
 
@@ -132,4 +132,4 @@ sub make(
 ) returns Mu
 ```
 
-Calls get-vars and process-makefile for you to generate '$folder/Makefile', then runs your system's 'make' to build it.
+Calls `get-vars` and `process-makefile` for you to generate '$folder/Makefile', then runs your system's `make` to build it.
