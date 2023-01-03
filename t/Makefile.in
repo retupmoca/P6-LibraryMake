@@ -1,7 +1,7 @@
 all: %DESTDIR%/test%EXE%
 
 %DESTDIR%/test%EXE%: test%O%
-	%LD% %LDFLAGS% %LIBS% %LDOUT%%DESTDIR%/test%EXE% test%O%
+	%LD% %LDFLAGS% %LDOUT%%DESTDIR%/test%EXE% test%O%
 
 test%O%: test.c
 	%CC% -c %CCFLAGS% %CCOUT%test%O% test.c
