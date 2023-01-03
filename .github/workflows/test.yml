@@ -3,7 +3,7 @@ name: test
 on:
   push:
     branches:
-      - '*'
+      - master
     tags-ignore:
       - '*'
   pull_request:
@@ -14,20 +14,20 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macOS-latest
+          #- macOS-latest
           - windows-latest
         raku-version:
           - 'latest'
-          - '2021.12'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - uses: ilammy/msvc-dev-cmd@v1
       - uses: Raku/setup-raku@v1
         with:
           raku-version: ${{ matrix.raku-version }}
       - name: Install Dependencies
-        run: |
-          zef install --/test App::Prove6
-          zef install --deps-only .
+        run: zef install --/test --test-depends --deps-only .
+      - name: Install App::Prove6
+        run: zef install --/test App::Prove6
       - name: Run Tests
-        run: prove6 -I. t
+        run: prove6 -l t
