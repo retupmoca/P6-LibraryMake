@@ -1,7 +1,9 @@
 #| An attempt to simplify building native code for a Raku module.
 unit module LibraryMake;
 
+
 =begin pod
+
 This is effectively a small configure script for a Makefile. It will allow you to
 use the same tools to build your native code that were used to build Raku itself.
 
@@ -191,7 +193,7 @@ our sub get-vars(Str $destfolder --> Hash) is export {
 }
 
 #| Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should
-#| be the result of get-vars above.
+#| be the result of C<get-vars> above.
 our sub process-makefile(Str $folder, %vars) is export {
     my $makefile = slurp($folder~'/Makefile.in');
     for %vars.kv -> $k, $v {
@@ -200,8 +202,8 @@ our sub process-makefile(Str $folder, %vars) is export {
     spurt($folder~'/Makefile', $makefile);
 }
 
-#| Calls get-vars and process-makefile for you to generate '$folder/Makefile',
-#| then runs your system's 'make' to build it.
+#| Calls C<get-vars> and C<process-makefile> for you to generate '$folder/Makefile',
+#| then runs your system's C<make> to build it.
 our sub make(Str $folder, Str $destfolder) is export {
     my %vars = get-vars($destfolder);
     process-makefile($folder, %vars);

@@ -1,6 +1,8 @@
 LibraryMake
 ------------------
 
+[![test](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml/badge.svg)](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml)
+
 An attempt to simplify building native code for a Raku module.
 
 This is effectively a small configure script for a Makefile. It will allow you to
@@ -119,7 +121,7 @@ sub process-makefile(
 ) returns Mu
 ```
 
-Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should be the result of get-vars above.
+Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should be the result of `get-vars` above.
 
 ### sub make
 
@@ -130,4 +132,4 @@ sub make(
 ) returns Mu
 ```
 
-Calls get-vars and process-makefile for you to generate '$folder/Makefile', then runs your system's 'make' to build it.
+Calls `get-vars` and `process-makefile` for you to generate '$folder/Makefile', then runs your system's `make` to build it.
