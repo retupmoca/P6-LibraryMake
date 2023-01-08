@@ -132,4 +132,15 @@ sub make(
 ) returns Mu
 ```
 
-Calls `get-vars` and `process-makefile` for you to generate '$folder/Makefile', then runs your system's `make` to build it.
+Calls `get-vars` and `process-makefile` for you to generate '$folder/Makefile', then runs your system's 'make' to build it.
+
+
+### sub build-tools-installed()
+```
+sub build-tools-installed(
+) returns Bool
+```
+
+Returns True if the configured compiler(CC), linker(LD) and make program(MAKE) have been installed on this sytem system.
+
+
