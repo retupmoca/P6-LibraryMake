@@ -2,7 +2,7 @@
     "perl" : "6.*",
     "name" : "LibraryMake",
     "version" : "1.0.0",
-    "author" : "github:retupmoca",
+    "auth" : "github:retupmoca",
     "description" : "An attempt to simplify native compilation",
     "depends" : [ "Shell::Command", "File::Which" ],
     "provides" : {
