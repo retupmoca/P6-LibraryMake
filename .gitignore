@@ -4,3 +4,4 @@ test.obj
 test.o
 test
 .precomp/
+sdist/
