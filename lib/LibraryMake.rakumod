@@ -1,15 +1,18 @@
-#| An attempt to simplify building native code for a perl6 module.
+#| An attempt to simplify building native code for a Raku module.
 unit module LibraryMake;
 
-=begin pod
-This is effectively a small configure script for a Makefile. It will allow you to
-use the same tools to build your native code that were used to build perl6 itself.
+use File::Which;
 
-Typically, this will be used in both Build.pm (to support installation using a
-module manager), and in a standalone Configure.pl script in the src directory
+=begin pod
+
+This is effectively a small configure script for a Makefile. It will allow you to
+use the same tools to build your native code that were used to build Raku itself.
+
+Typically, this will be used in both C<Build.rakumod> (to support installation using a
+module manager), and in a standalone C<Configure.raku> script in the C<src> directory
 (to support standalone testing/building). Note that if you need additional
-custom configure code, you will currently need to add it to both your Build.pm
-and to your Configure.pl6
+custom configure code, you will currently need to add it to both your C<Build.rakumod>
+and to your C<Configure.raku>.
 
 =end pod
 
@@ -17,10 +20,10 @@ and to your Configure.pl6
 
 =begin pod
 The below files are examples of what you would write in your own project.
-The src directory is merely a convention, and the Makefile.in will likely be
+The src directory is merely a convention, and the C<Makefile.in> will likely be
 significantly different in your own project.
 
-/Build.pm
+/Build.rakumod
 
     use v6;
     use LibraryMake;
@@ -42,9 +45,9 @@ significantly different in your own project.
         }
     }
 
-/src/Configure.pl6
+/src/Configure.raku
 
-    #!/usr/bin/env perl6
+    #!/usr/bin/env raku
     use v6;
     use LibraryMake;
 
@@ -74,9 +77,9 @@ significantly different in your own project.
         %CC% -c %CCSHARED% %CCFLAGS% %CCOUT% chelper%O% src/chelper.c
 
     test: all
-    prove -e "perl6 -Ilib" t
+        prove -e "raku -Ilib" t
 
-/lib/My/Module.pm6
+/lib/My/Module.rakumod
 
     # ...
 
@@ -191,7 +194,7 @@ our sub get-vars(Str $destfolder --> Hash) is export {
 }
 
 #| Takes '$folder/Makefile.in' and writes out '$folder/Makefile'. %vars should
-#| be the result of get-vars above.
+#| be the result of C<get-vars> above.
 our sub process-makefile(Str $folder, %vars) is export {
     my $makefile = slurp($folder~'/Makefile.in');
     for %vars.kv -> $k, $v {
@@ -200,8 +203,8 @@ our sub process-makefile(Str $folder, %vars) is export {
     spurt($folder~'/Makefile', $makefile);
 }
 
-#| Calls get-vars and process-makefile for you to generate '$folder/Makefile',
-#| then runs your system's 'make' to build it.
+#| Calls C<get-vars> and C<process-makefile> for you to generate '$folder/Makefile',
+#| then runs your system's C<make> to build it.
 our sub make(Str $folder, Str $destfolder) is export {
     my %vars = get-vars($destfolder);
     process-makefile($folder, %vars);
@@ -217,4 +220,18 @@ our sub make(Str $folder, Str $destfolder) is export {
         die "make exited with signal "~$proc.exitcode;
     }
     chdir($goback);
+}
+
+sub can-compile(%vars) {
+    so %vars<CC> && which(%vars<CC>);
+}
+sub can-link(%vars) {
+    so %vars<LD> && which(%vars<LD>);
+}
+sub can-make(%vars = get-vars('.')) {
+    so %vars<MAKE> && which(%vars<MAKE>);
+}
+our sub build-tools-installed() is export {
+    my %vars = get-vars('.');
+    can-compile(%vars) && can-link(%vars) && can-make(%vars)
 }
