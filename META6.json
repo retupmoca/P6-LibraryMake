@@ -1,12 +1,16 @@
 {
-    "perl" : "6.*",
-    "name" : "LibraryMake",
-    "version" : "1.0.0",
-    "auth" : "zef:jjmerelo",
-    "description" : "An attempt to simplify native compilation",
-    "depends" : [ "Shell::Command", "File::Which" ],
-    "provides" : {
-        "LibraryMake" : "lib/LibraryMake.rakumod"
-    },
-    "source-url" : "git://github.com/retupmoca/P6-LibraryMake.git"
+  "name": "LibraryMake",
+  "description": "An attempt to simplify native compilation",
+  "version": "1.0.0",
+  "perl": "6.*",
+  "meta-version": 1,
+  "auth": "zef:jjmerelo",
+  "depends": [
+    "Shell::Command",
+    "File::Which"
+  ],
+  "provides": {
+    "LibraryMake": "lib/LibraryMake.rakumod"
+  },
+  "source-url": "git://github.com/retupmoca/P6-LibraryMake.git"
 }
