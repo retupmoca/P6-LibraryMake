@@ -4,4 +4,5 @@ test.obj
 test.o
 test
 .precomp/
-sdist/
+.idea/
+*.iml
