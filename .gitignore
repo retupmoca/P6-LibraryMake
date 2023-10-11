@@ -1,8 +1,7 @@
-Makefile
 test.exe
 test.obj
-test.o
-test
+
+# Raku stuff
 .precomp/
 .idea/
 *.iml
