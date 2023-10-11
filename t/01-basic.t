@@ -19,9 +19,12 @@ subtest "Can create Makefile", {
         shell(%vars<MAKE>);
         ok (("test" ~ %vars<O>).IO ~~ :f), "Object file created";
         ok (("test" ~ %vars<EXE>).IO ~~ :f), "Binary was created";
-
         ok qqx/.{ $*SPEC.dir-sep }test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/,
         "Binary runs!";
+        for <test test.o> {
+            $_.IO.unlink;
+        }
+        "Makefile".IO.unlink;
     }
     else {
         skip
