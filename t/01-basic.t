@@ -22,10 +22,6 @@ subtest "Can create Makefile", {
         ok (("test" ~ %vars<EXE>).IO ~~ :f), "Binary was created";
         ok qqx/.{ $*SPEC.dir-sep }test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/,
         "Binary runs!";
-        for <test test.o> {
-            $_.IO.unlink;
-        }
-        "Makefile".IO.unlink;
     }
     else {
         skip
@@ -39,5 +35,10 @@ subtest "Errors correctly if it can't", {
     throws-like { process-makefile('t', %vars ) }, X::AdHoc;
     shell "chmod +w .";
 }
+
+for <test test.o> {
+    $_.IO.unlink;
+}
+"Makefile".IO.unlink;
 
 done-testing;
