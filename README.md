@@ -156,4 +156,4 @@ Returns True if the configured compiler(CC), linker(LD) and make program(MAKE) h
 * [1.0.1](https://github.com/retupmoca/P6-LibraryMake/releases/tag/v1.0.1) Checks that the directory it's writing is writable, errors if it
  does not
 * [1.0.0](https://github.com/retupmoca/P6-LibraryMake/releases/tag/v1.0.0
-) Original version, newly released to the REA.
+) Original version, newly released to the zef ecosystem.
