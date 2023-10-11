@@ -16,7 +16,8 @@ subtest "Can create Makefile", {
         lives-ok { process-makefile('t', %vars) }, "Process makefile didn't die";
         ok ("t/Makefile".IO ~~ :f), "Makefile was created";
         chdir("t");
-        shell(%vars<MAKE>);
+        my $make-output = shell(%vars<MAKE>, :out, :err);
+        is $make-output.err.slurp(:close), "";
         ok (("test" ~ %vars<O>).IO ~~ :f), "Object file created";
         ok (("test" ~ %vars<EXE>).IO ~~ :f), "Binary was created";
         ok qqx/.{ $*SPEC.dir-sep }test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/,
