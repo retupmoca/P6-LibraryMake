@@ -24,7 +24,7 @@ significantly different in your own project.
 
 /Build.rakumod
 
-    use v6;
+```raku
     use LibraryMake;
     use Shell::Command;
 
@@ -43,11 +43,12 @@ significantly different in your own project.
             chdir($goback);
         }
     }
+```
 
 /src/Configure.raku
 
+```raku
     #!/usr/bin/env raku
-    use v6;
     use LibraryMake;
 
     my $libname = 'chelper';
@@ -59,9 +60,11 @@ significantly different in your own project.
     shell(%vars<MAKE>);
 
     say "Configure completed! You can now run '%vars<MAKE>' to build lib$libname.";
+```
 
 /src/Makefile.in (Make sure you use TABs and not spaces!)
 
+```Makefile
     .PHONY: clean test
 
     all: %DESTDIR%/resources/libraries/%chelper%
@@ -77,9 +80,11 @@ significantly different in your own project.
 
     test: all
         prove -e "raku -Ilib" t
+```
 
 /lib/My/Module.rakumod
 
+```raku
     # ...
 
     use NativeCall;
@@ -88,9 +93,11 @@ significantly different in your own project.
     constant CHELPER = %?RESOURCES<libraries/chelper>.absolute;
 
     sub foo() is native( CHELPER ) { * };
+```
 
 /META6.json
 
+```JSON
     # include the following section in your META6.json:
     "resources" : [
         "library/chelper"
@@ -98,6 +105,7 @@ significantly different in your own project.
     "depends" : [
         "LibraryMake"
     ]
+```
 
 Functions
 ---------
