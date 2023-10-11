@@ -1,7 +1,7 @@
 {
   "name": "LibraryMake",
   "description": "An attempt to simplify native compilation",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "perl": "6.*",
   "meta-version": 1,
   "auth": "zef:jjmerelo",
@@ -12,5 +12,6 @@
   "provides": {
     "LibraryMake": "lib/LibraryMake.rakumod"
   },
+  "license": "MIT",
   "source-url": "git://github.com/retupmoca/P6-LibraryMake.git"
 }
