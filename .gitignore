@@ -6,3 +6,6 @@ test
 .precomp/
 .idea/
 *.iml
+
+# fez
+sdist/
