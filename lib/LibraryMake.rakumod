@@ -200,7 +200,11 @@ our sub process-makefile(Str $folder, %vars) is export {
     for %vars.kv -> $k, $v {
         $makefile ~~ s:g/\%$k\%/$v/;
     }
-    spurt($folder~'/Makefile', $makefile);
+    if ( $folder.IO.w() ) {
+        spurt($folder ~ '/Makefile', $makefile);
+    } else {
+        die "$folder is not writable";
+    }
 }
 
 #| Calls C<get-vars> and C<process-makefile> for you to generate '$folder/Makefile',
