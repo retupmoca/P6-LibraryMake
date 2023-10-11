@@ -95,10 +95,10 @@ significantly different in your own project.
     sub foo() is native( CHELPER ) { * };
 ```
 
-/META6.json
+Include the following section in your META6.json:
+
 
 ```JSON
-    # include the following section in your META6.json:
     "resources" : [
         "library/chelper"
     ],
