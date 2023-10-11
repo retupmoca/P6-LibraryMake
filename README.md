@@ -153,7 +153,10 @@ Returns True if the configured compiler(CC), linker(LD) and make program(MAKE) h
 
 ## Change log
 
-* [1.0.2]() Fixes test error when `prove6` is installed as test runner and
+
+* [1.0.3](https://github.com/retupmoca/P6-LibraryMake/releases/tag/v1.0.3
+) Fixes files included in zef.
+* [1.0.2](https://github.com/retupmoca/P6-LibraryMake/releases/tag/v1.0.2) Fixes test error when `prove6` is installed as test runner and
  picked up by `zef`.
 * [1.0.1](https://github.com/retupmoca/P6-LibraryMake/releases/tag/v1.0.1) Checks that the directory it's writing is writable, errors if it
  does not
