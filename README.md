@@ -45,7 +45,7 @@ significantly different in your own project.
     }
 ```
 
-/src/Configure.raku
+ `src/Configure.raku`
 
 ```raku
     #!/usr/bin/env raku
@@ -62,7 +62,7 @@ significantly different in your own project.
     say "Configure completed! You can now run '%vars<MAKE>' to build lib$libname.";
 ```
 
-/src/Makefile.in (Make sure you use TABs and not spaces!)
+`src/Makefile.in` (Make sure you use TABs and not spaces!)
 
 ```Makefile
     .PHONY: clean test
