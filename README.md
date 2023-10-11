@@ -151,4 +151,7 @@ sub build-tools-installed(
 
 Returns True if the configured compiler(CC), linker(LD) and make program(MAKE) have been installed on this sytem system.
 
+## Change log
 
+* [1.0.0](https://github.com/retupmoca/P6-LibraryMake/releases/tag/v1.0.0
+) Original version, newly released to the REA.
