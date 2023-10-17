@@ -31,9 +31,11 @@ subtest "Can create Makefile", {
 }
 
 subtest "Errors correctly if it can't", {
-    shell "chmod -w .";
+    my $this-dir = ".".IO;
+    my $keep-mode = $this-dir.mode;
+    $this-dir.chmod: 0x555;
     throws-like { process-makefile('t', %vars ) }, X::AdHoc;
-    shell "chmod +w .";
+    $this-dir.chmod: $keep-mode;
 }
 
 for <test test.o> {
