@@ -30,7 +30,7 @@ subtest "Can create Makefile", {
     }
 }
 
-if ( !$*DISTRO.is-win && $*DISTRO.name != "macos") {
+if ( !$*DISTRO.is-win && $*DISTRO.name ne "macos") {
     warn $*DISTRO.name;
     subtest "Errors correctly if it can't", {
         my $this-dir = ".".IO;
