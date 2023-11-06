@@ -3,7 +3,9 @@ LibraryMake
 
 [![test](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml/badge.svg)](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml)
 
-An attempt to simplify building native code for a Raku module.
+An attempt to simplify building native code for a
+[Raku](https://raku.org) module. It should work on all platforms, as long as 
+specified tools are available locally.
 
 This is effectively a small configure script for a Makefile. It will allow you to
 use the same tools to build your native code that were used to build Raku itself.
@@ -16,7 +18,6 @@ and to your `Configure.raku`.
 
 Example Usage
 -------------
-
 
 The below files are examples of what you would write in your own project.
 The `src` directory is merely a convention, and the `Makefile.in` will likely be
@@ -151,8 +152,9 @@ sub build-tools-installed(
 
 Returns True if the configured compiler(CC), linker(LD) and make program(MAKE) have been installed on this sytem system.
 
-## Change log
 
+
+## Change log
 
 * [1.0.4](https://github.com/retupmoca/P6-LibraryMake/releases/tag/v1.0.4) Reinstates macOS test and eliminates test that fails in it.
 * [1.0.3](https://github.com/retupmoca/P6-LibraryMake/releases/tag/v1.0.3) Fixes files included in zef.
