@@ -13,16 +13,12 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          #- macOS-latest
-          #- windows-latest
+          - macOS-latest
         raku-version:
           - 'latest'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Sets up environment variables in Windows
-        if: matrix.os == 'windows-latest'
-        uses: ilammy/msvc-dev-cmd@v1
       - uses: Raku/setup-raku@v1
         with:
           raku-version: ${{ matrix.raku-version }}
