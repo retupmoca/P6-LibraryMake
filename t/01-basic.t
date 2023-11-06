@@ -30,12 +30,15 @@ subtest "Can create Makefile", {
     }
 }
 
-subtest "Errors correctly if it can't", {
-    my $this-dir = ".".IO;
-    my $keep-mode = $this-dir.mode;
-    $this-dir.chmod: 0x555;
-    throws-like { process-makefile('t', %vars ) }, X::AdHoc;
-    $this-dir.chmod: $keep-mode;
+unless ( $*DISTRO.is-win ) {
+    warn $*DISTRO.name;
+    subtest "Errors correctly if it can't", {
+        my $this-dir = ".".IO;
+        my $keep-mode = $this-dir.mode;
+        $this-dir.chmod: 0x555;
+        throws-like { process-makefile('t', %vars) }, X::AdHoc;
+        $this-dir.chmod: $keep-mode;
+    }
 }
 
 for <test test.o> {
