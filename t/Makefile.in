@@ -4,4 +4,4 @@ all: %DESTDIR%/test%EXE%
 	%LD% %LDFLAGS% %LDOUT%%DESTDIR%/test%EXE% test%O%
 
 test%O%: test.c
-	%CC%  %LDFLAGS% -c %CCFLAGS% %CCOUT%test%O% test.c
+	%CC% -c %CCFLAGS% %CCOUT%test%O% test.c
