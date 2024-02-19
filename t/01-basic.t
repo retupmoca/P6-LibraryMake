@@ -15,7 +15,6 @@ subtest "Can create Makefile", {
     if build-tools-installed() {
         lives-ok { process-makefile('t', %vars) }, "Process makefile didn't die";
         ok ("t/Makefile".IO ~~ :f), "Makefile was created";
-        say "="x 10, "\n", slurp "t/Makefile";
         chdir("t");
         my $make-output = shell(%vars<MAKE>, :out, :err);
         is $make-output.err.slurp(:close), "";
@@ -42,9 +41,9 @@ if ( !$*DISTRO.is-win && $*DISTRO.name ne "macos") {
     }
 }
 
-# for <test test.o> {
-#     $_.IO.unlink;
-# }
-# "Makefile".IO.unlink;
+ for <test test.o> {
+     $_.IO.unlink;
+ }
+ "Makefile".IO.unlink;
 
 done-testing;
