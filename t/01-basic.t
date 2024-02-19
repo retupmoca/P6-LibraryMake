@@ -22,11 +22,13 @@ subtest "Can create Makefile", {
         ok (("test" ~ %vars<O>).IO ~~ :f), "Object file created";
         ok (("test" ~ %vars<EXE>).IO ~~ :f), "Binary was created";
         ok qqx/.{ $*SPEC.dir-sep }test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/,
-        "Binary runs!";
-        my $nm-output = shell( "nm .{ $*SPEC.dir-sep }test%vars<EXE>", :out,
-                :err);
-        ok $nm-output.err.slurp(:close) ~~ /\s+no/,
-                "LDFLAGS works - no symbols!";
+                "Binary runs!";
+        unless ( $*DISTRO.is-win ) {
+            my $nm-output = shell("nm .{ $*SPEC.dir-sep }test%vars<EXE>", :out,
+                    :err);
+            ok $nm-output.err.slurp(:close) ~~ /\s+no/,
+                    "LDFLAGS works - no symbols!";
+        }
     }
     else {
         skip
