@@ -2,7 +2,7 @@ use Test;
 
 use LibraryMake;
 
-constant FLAG = "";
+constant FLAG = "-fPIC";
 %*ENV<LDFLAGS> = FLAG;
 my %vars = get-vars('.');
 
