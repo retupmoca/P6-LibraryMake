@@ -109,32 +109,7 @@ significantly different in your own project.
 our sub get-vars(Str $destfolder --> Hash) is export {
     my %vars;
     %vars<DESTDIR> = $destfolder;
-    if $*VM.name eq 'parrot' {
-        %vars<O> = $*VM.config<o>;
-        %vars<SO> = $*VM.config<load_ext>;
-        %vars<CC> = $*VM.config<cc>;
-        %vars<CCSHARED> = $*VM.config<cc_shared>;
-        %vars<CCOUT> = $*VM.config<cc_o_out>;
-        %vars<CCFLAGS> = $*VM.config<ccflags>;
-
-        %vars<LD> = $*VM.config<ld>;
-        %vars<LDSHARED> = $*VM.config<ld_load_flags>;
-        %vars<LDFLAGS> = $*VM.config<ldflags>;
-        %vars<LIBS> = $*VM.config<libs>;
-        %vars<LDOUT> = $*VM.config<ld_out>;
-
-        %vars<MAKE> = $*VM.config<make>;
-
-        %vars<LDUSR> = '-l';
-        # this is copied from moar - probably wrong
-        #die "Don't know how to get platform independent '-l' (LDUSR) on Parrot";
-        #my $ldusr = $*VM.config<ldusr>;
-        #$ldusr ~~ s/\%s//;
-        #%vars<LDUSR> = $ldusr;
-
-        %vars<EXE> = $*VM.config<exe>;
-    }
-    elsif $*VM.name eq 'moar' {
+    if $*VM.name eq 'moar' {
         %vars<O> = $*VM.config<obj>;
         my $so = $*VM.config<dll>;
         $so ~~ s/^.*\%s//;
