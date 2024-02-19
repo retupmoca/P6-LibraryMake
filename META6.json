@@ -1,7 +1,7 @@
 {
   "name": "LibraryMake",
   "description": "An attempt to simplify native compilation",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "perl": "6.*",
   "meta-version": 1,
   "auth": "zef:jjmerelo",
