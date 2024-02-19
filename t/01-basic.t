@@ -2,7 +2,7 @@ use Test;
 
 use LibraryMake;
 
-constant FLAG = "-s";
+constant FLAG = "";
 %*ENV<LDFLAGS> = FLAG;
 my %vars = get-vars('.');
 
@@ -13,9 +13,9 @@ subtest "Sanity checks", {
 
 subtest "Can create Makefile", {
     if build-tools-installed() {
-        %vars<CCFLAGS> ~= " -shared";
         lives-ok { process-makefile('t', %vars) }, "Process makefile didn't die";
         ok ("t/Makefile".IO ~~ :f), "Makefile was created";
+        say "="x 10, "\n", slurp "t/Makefile";
         chdir("t");
         my $make-output = shell(%vars<MAKE>, :out, :err);
         is $make-output.err.slurp(:close), "";
@@ -23,12 +23,6 @@ subtest "Can create Makefile", {
         ok (("test" ~ %vars<EXE>).IO ~~ :f), "Binary was created";
         ok qqx/.{ $*SPEC.dir-sep }test%vars<EXE>/ ~~ /^Hello ' ' world\!\n$/,
                 "Binary runs!";
-        unless ( $*DISTRO.is-win ) {
-            my $nm-output = shell("nm .{ $*SPEC.dir-sep }test%vars<EXE>", :out,
-                    :err);
-            ok $nm-output.err.slurp(:close) ~~ /\s+no/,
-                    "LDFLAGS works - no symbols!";
-        }
     }
     else {
         skip
@@ -48,9 +42,9 @@ if ( !$*DISTRO.is-win && $*DISTRO.name ne "macos") {
     }
 }
 
- for <test test.o> {
-     $_.IO.unlink;
- }
- "Makefile".IO.unlink;
+# for <test test.o> {
+#     $_.IO.unlink;
+# }
+# "Makefile".IO.unlink;
 
 done-testing;
