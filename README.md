@@ -1,7 +1,8 @@
 LibraryMake
 ------------------
 
-[![OS tests](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml/badge.svg)](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml)
+[![OS
+tests](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml/badge.svg)](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/test.yml) [![LinuxNix](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/nixos.yml/badge.svg)](https://github.com/retupmoca/P6-LibraryMake/actions/workflows/nixos.yml)
 
 An attempt to simplify building native code for a
 [Raku](https://raku.org) module. It should work on all platforms, as long as 
