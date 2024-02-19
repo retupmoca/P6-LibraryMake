@@ -16,5 +16,4 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
     - run: |
-        nix-shell --run "ld --version"
-        nix-shell -p rakudo nqp moarvm perl zef stdenv zlib openssl cacert git curl wget --run "zef --debug install ."
+        nix-shell -p rakudo nqp moarvm perl zef stdenv zlib openssl cacert git curl wget --run "ld --version && zef --debug install ."
