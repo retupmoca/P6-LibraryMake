@@ -2,7 +2,7 @@ use Test;
 
 use LibraryMake;
 
-constant FLAG = "-fPIC";
+constant FLAG = "";
 %*ENV<LDFLAGS> = FLAG;
 my %vars = get-vars('.');
 
@@ -13,6 +13,8 @@ subtest "Sanity checks", {
 
 subtest "Can create Makefile", {
     if build-tools-installed() {
+        %vars<CCFLAGS> ~= " -shared";
+        say %vars;
         lives-ok { process-makefile('t', %vars) }, "Process makefile didn't die";
         ok ("t/Makefile".IO ~~ :f), "Makefile was created";
         chdir("t");
@@ -41,9 +43,9 @@ if ( !$*DISTRO.is-win && $*DISTRO.name ne "macos") {
     }
 }
 
-for <test test.o> {
-    $_.IO.unlink;
-}
-"Makefile".IO.unlink;
+# for <test test.o> {
+#     $_.IO.unlink;
+# }
+# "Makefile".IO.unlink;
 
 done-testing;

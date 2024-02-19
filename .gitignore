@@ -8,3 +8,6 @@ test.obj
 
 # fez
 sdist/
+
+# emacs
+*~

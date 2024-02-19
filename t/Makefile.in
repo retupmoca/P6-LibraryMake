@@ -1,6 +1,6 @@
 all: %DESTDIR%/test%EXE%
 
-%DESTDIR%/test%EXE%: test%O%
+%DESTDIR%/test%EXE%: test%SO%
 	%LD% %LDFLAGS% %LDOUT%%DESTDIR%/test%EXE% test%O%
 
 test%O%: test.c
